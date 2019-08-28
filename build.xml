@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project name="TFM Tweaker">
+	<property name="workspacedir" location="${basedir}/.."/>
+
+	<path id="classpath">
+		<fileset dir="${basedir}/lib" includes="**/*.jar" />
+	</path>
+
+	<manifestclasspath property="manifest.classpath" jarfile="tfmt.jar">
+		<classpath refid="classpath" />
+	</manifestclasspath>
+
+	<target name="release">
+		<taskdef name="dropper" classname="util.DropperTask" classpath="${workspacedir}/util/loader/bin" />
+		<dropper gitdir="${workspacedir}" destfile="${workspacedir}/dist/files.properties">
+			<fileset dir="${workspacedir}" includes="core/bin/ core/lib/ core/res/" excludes="**/*LICENSE*" />
+		</dropper>
+
+		<jar destfile="${basedir}/release/tfmt.jar">
+			<manifest>
+				<attribute name="Main-Class" value="loader.Main" />
+				<attribute name="Class-Path" value="." />
+			</manifest>
+			<fileset dir="${workspacedir}/util/loader/bin" />
+			<fileset file="${workspacedir}/dist/files.properties" />
+			<fileset dir="${workspacedir}" includes="core/bin/ core/lib/ core/res/" excludes="**/*LICENSE*" />
+		</jar>		
+		
+		<taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask" classpath="${workspacedir}/util/launch4j/launch4j.jar
+			:${workspacedir}/util/launch4j/lib/xstream.jar" />
+		<launch4j configFile="launch4j.xml" />
+	</target>
+</project>
